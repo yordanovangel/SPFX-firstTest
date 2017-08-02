@@ -11,6 +11,10 @@
       "es6-promise",
       "es6-collections",
       "webpack-env"
-    ]
+    ],
+    "bootstrap": {
+      "path": "node_modules/bootstrap/dist/js/bootstrap.min.js",
+      "globalName": "bootstrap"
+    }
   }
 }

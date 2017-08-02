@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+import {EnvironmentType, Version} from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
@@ -12,7 +12,10 @@ import HelloWorld from './components/HelloWorld';
 import { IHelloWorldProps } from './components/IHelloWorldProps';
 import { IHelloWorldWebPartProps } from './IHelloWorldWebPartProps';
 import {Web} from "sp-pnp-js";
-import {Output} from "webpack";
+
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+import Environment from "@microsoft/sp-core-library/lib/Environment";
 
 export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
 
@@ -25,27 +28,23 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
         description: this.properties.description
       }
     );
-
+// намира абсолютния път и след това прави заявка към списъка с служители , също намира и текущия служител и връща информация за него
+    if(Environment.type === EnvironmentType.Local){
     let web = new Web(this.context.pageContext.site.absoluteUrl);
      let currEmpLoginName = '';
       let curruser = web.currentUser.get().then(function (res) {
          currEmpLoginName = res.LoginName.substring(res.LoginName.lastIndexOf("|") + 1, res.LoginName.lastIndexOf("@"));
         console.log(currEmpLoginName);
       });
-
-
-
     web.lists.getByTitle("Employees").items.top(1).filter("Title eq 'gkrystev'").get().then((items: any[]) => {
-
-      // see if we got something
       if (items.length > 0) {
       console.log(items[0].LirexEmplFullName);
         console.log(JSON.stringify(items));
-
       }
     }
-
     );
+    }
+    //край на заявката
 
     ReactDom.render(element, this.domElement);
 
